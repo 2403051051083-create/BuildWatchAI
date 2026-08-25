@@ -1,6 +1,6 @@
 "use client";
 
-import { FileText, Download, FileSpreadsheet, File } from "lucide-react";
+import { FileText, Download, FileSpreadsheet, File, Printer } from "lucide-react";
 
 const reportTypes = [
   { name: "Daily Report", desc: "Today's progress, safety, and activity summary", formats: ["PDF", "Excel", "CSV"] },
@@ -20,11 +20,21 @@ const recentReports = [
 ];
 
 export default function ReportsPage() {
+  const printReport = (reportName: string) => {
+    document.title = `${reportName} - BuildWatch AI`;
+    window.print();
+  };
+
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-display font-bold">Reports</h1>
-        <p className="text-sm text-gray-400">Generate and download project reports</p>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-display font-bold">Reports</h1>
+          <p className="text-sm text-gray-400">Generate and download project reports</p>
+        </div>
+        <button onClick={() => printReport("Daily Safety Report")} className="btn-primary text-sm flex items-center gap-2">
+          <Printer className="w-4 h-4" /> Print / Save PDF
+        </button>
       </div>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -41,7 +51,7 @@ export default function ReportsPage() {
             </div>
             <div className="flex gap-2">
               {report.formats.map((fmt) => (
-                <button key={fmt} className="btn-secondary !py-1.5 !px-3 text-xs flex items-center gap-1">
+                <button key={fmt} onClick={() => fmt === "PDF" ? printReport(report.name) : undefined} className="btn-secondary !py-1.5 !px-3 text-xs flex items-center gap-1">
                   <Download className="w-3 h-3" /> {fmt}
                 </button>
               ))}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
 import {
   User, Shield, Bell, Palette, Globe, Key,
   Plus, Trash2, Edit2, CheckCircle, Camera,
@@ -65,11 +66,27 @@ function Toggle({ enabled, onToggle }: { enabled: boolean; onToggle: () => void 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
   const [saved, setSaved] = useState(false);
+  const [profile, setProfile] = useState({
+    fullName: "Admin User",
+    email: "admin@buildwatch.ai",
+    company: "BuildWatch Construction",
+    role: "Project Manager",
+    phone: "+1 (555) 012-3456",
+    location: "New York, NY",
+  });
   const [notifications, setNotifications] = useState<Record<string, boolean>>(
     Object.fromEntries(notificationItems.map((n) => [n.key, true]))
   );
 
+  useEffect(() => {
+    const storedProfile = localStorage.getItem("buildwatch-profile");
+    if (storedProfile) {
+      setProfile((current) => ({ ...current, ...JSON.parse(storedProfile) }));
+    }
+  }, []);
+
   const handleSave = () => {
+    localStorage.setItem("buildwatch-profile", JSON.stringify(profile));
     setSaved(true);
     setTimeout(() => setSaved(false), 2500);
   };
@@ -120,15 +137,15 @@ export default function SettingsPage() {
                   <div className="flex items-center gap-4">
                     <div className="relative">
                       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-600 to-brand-700 flex items-center justify-center text-2xl font-bold shadow-glow">
-                        AU
+                        {profile.fullName.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase()}
                       </div>
                       <button className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-brand-600 flex items-center justify-center border-2 border-surface hover:bg-brand-500 transition-colors">
                         <Camera className="w-3 h-3" />
                       </button>
                     </div>
                     <div>
-                      <p className="font-medium">Admin User</p>
-                      <p className="text-sm text-gray-400">admin@buildwatch.ai</p>
+                      <p className="font-medium">{profile.fullName}</p>
+                      <p className="text-sm text-gray-400">{profile.email}</p>
                       <span className="badge-success !text-[10px] mt-1">Pro Plan</span>
                     </div>
                   </div>
@@ -136,16 +153,16 @@ export default function SettingsPage() {
                   {/* Form fields */}
                   <div className="grid md:grid-cols-2 gap-4">
                     {[
-                      { label: "Full Name", val: "Admin User" },
-                      { label: "Email", val: "admin@buildwatch.ai" },
-                      { label: "Company", val: "BuildWatch Construction" },
-                      { label: "Role", val: "Project Manager" },
-                      { label: "Phone", val: "+1 (555) 012-3456" },
-                      { label: "Location", val: "New York, NY" },
+                      { label: "Full Name", key: "fullName" as const },
+                      { label: "Email", key: "email" as const },
+                      { label: "Company", key: "company" as const },
+                      { label: "Role", key: "role" as const },
+                      { label: "Phone", key: "phone" as const },
+                      { label: "Location", key: "location" as const },
                     ].map((field) => (
                       <div key={field.label}>
                         <label className="text-xs text-gray-400 mb-1.5 block">{field.label}</label>
-                        <input className="input-field !py-2.5" defaultValue={field.val} />
+                        <input className="input-field !py-2.5" value={profile[field.key]} onChange={(event) => setProfile((current) => ({ ...current, [field.key]: event.target.value }))} />
                       </div>
                     ))}
                   </div>

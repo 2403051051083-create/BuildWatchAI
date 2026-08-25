@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { projects, alerts } from "@/lib/mock-data";
+import { createClient } from "@/lib/supabase/client";
 
 interface TopNavProps {
   sidebarCollapsed: boolean;
@@ -18,6 +19,7 @@ export default function TopNav({ sidebarCollapsed }: TopNavProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [isDark, setIsDark] = useState(true);
+  const supabase = createClient();
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem("buildwatch-theme");
@@ -39,6 +41,11 @@ export default function TopNav({ sidebarCollapsed }: TopNavProps) {
   }, [isDark]);
 
   const unreadAlerts = alerts.filter((a) => !a.read).length;
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.assign("/login");
+  };
 
   return (
     <header
@@ -158,9 +165,9 @@ export default function TopNav({ sidebarCollapsed }: TopNavProps) {
                 <Settings className="w-4 h-4" /> Settings
               </Link>
               <hr className="border-white/5 my-1" />
-              <Link href="/login" className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-status-danger hover:bg-white/5">
+              <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-status-danger hover:bg-white/5">
                 <LogOut className="w-4 h-4" /> Logout
-              </Link>
+              </button>
             </div>
           )}
         </div>

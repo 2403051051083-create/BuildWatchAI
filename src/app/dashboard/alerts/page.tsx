@@ -1,6 +1,8 @@
 "use client";
 
-import { Bell, Mail, MessageSquare, Flame, HardHat, Wrench, CloudRain, UserX, Phone } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
+import { Bell, Mail, MessageSquare, Flame, HardHat, Wrench, CloudRain, UserX, Phone, CheckCircle2, Clock3, UserPlus } from "lucide-react";
 import { alerts } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
@@ -20,7 +22,29 @@ const notificationChannels = [
   { name: "WhatsApp", icon: MessageSquare, enabled: false },
 ];
 
+const incidentSeed = [
+  { id: "INC-1042", title: "Helmet Violation Detected", location: "Camera 5 - South Facade", severity: "warning", assignee: "Safety Team", status: "Investigating", age: "2 min ago" },
+  { id: "INC-1041", title: "Unauthorized Entry", location: "Crane Base - Restricted Zone", severity: "critical", assignee: "James Rodriguez", status: "Open", age: "5 min ago" },
+  { id: "INC-1040", title: "Concrete Delivery Delay", location: "Floor 3 - Pour Area", severity: "warning", assignee: "Logistics Team", status: "Resolved", age: "15 min ago" },
+];
+
+type Incident = (typeof incidentSeed)[number];
+
 export default function AlertsPage() {
+  const [incidents, setIncidents] = useState<Incident[]>(incidentSeed);
+
+  const updateIncident = (id: string, field: "status" | "assignee", value: string) => {
+    setIncidents((current) => current.map((incident) => (
+      incident.id === id ? { ...incident, [field]: value } : incident
+    )));
+  };
+
+  const incidentCounts = {
+    open: incidents.filter((incident) => incident.status === "Open").length,
+    investigating: incidents.filter((incident) => incident.status === "Investigating").length,
+    resolved: incidents.filter((incident) => incident.status === "Resolved").length,
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -51,6 +75,56 @@ export default function AlertsPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-3">
+        <div className="glass-card-sm flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-status-danger/15 flex items-center justify-center"><Bell className="w-4 h-4 text-status-danger" /></div>
+          <div><p className="text-xs text-gray-400">Open incidents</p><p className="text-xl font-semibold">{incidentCounts.open}</p></div>
+        </div>
+        <div className="glass-card-sm flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-status-warning/15 flex items-center justify-center"><Clock3 className="w-4 h-4 text-status-warning" /></div>
+          <div><p className="text-xs text-gray-400">Under investigation</p><p className="text-xl font-semibold">{incidentCounts.investigating}</p></div>
+        </div>
+        <div className="glass-card-sm flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-status-success/15 flex items-center justify-center"><CheckCircle2 className="w-4 h-4 text-status-success" /></div>
+          <div><p className="text-xs text-gray-400">Resolved today</p><p className="text-xl font-semibold">{incidentCounts.resolved}</p></div>
+        </div>
+      </div>
+
+      <div className="glass-card">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h4 className="text-sm font-medium">AI Safety Incident Workflow</h4>
+            <p className="text-xs text-gray-500 mt-1">Detect, assign, investigate, and close incidents from one queue.</p>
+          </div>
+          <span className="badge badge-info">AI monitored</span>
+        </div>
+        <div className="space-y-2">
+          {incidents.map((incident) => (
+            <Link href={`/dashboard/alerts/${incident.id}`} key={incident.id} className="block rounded-xl border border-white/5 bg-white/[0.02] p-3 hover:border-brand-500/30 transition-colors">
+              <div className="flex flex-col lg:flex-row lg:items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-500">{incident.id}</span>
+                    <span className={cn("badge !text-[10px]", incident.severity === "critical" ? "badge-danger" : "badge-warning")}>{incident.severity}</span>
+                  </div>
+                  <p className="text-sm font-medium mt-1 truncate">{incident.title}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{incident.location} · {incident.age}</p>
+                </div>
+                <label className="flex items-center gap-2 text-xs text-gray-400">
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <select value={incident.assignee} onClick={(event) => event.preventDefault()} onChange={(event) => updateIncident(incident.id, "assignee", event.target.value)} className="input-field !w-auto !py-1.5 text-xs">
+                    <option>Safety Team</option><option>James Rodriguez</option><option>Logistics Team</option><option>Site Engineer</option>
+                  </select>
+                </label>
+                <select value={incident.status} onClick={(event) => event.preventDefault()} onChange={(event) => updateIncident(incident.id, "status", event.target.value)} className="input-field !w-auto !py-1.5 text-xs">
+                  <option>Open</option><option>Investigating</option><option>Resolved</option>
+                </select>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="glass-card">

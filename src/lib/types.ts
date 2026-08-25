@@ -22,6 +22,52 @@ export interface CameraFeed {
   motionDetected: boolean;
   aiDetection: string[];
   thumbnail: string;
+  videoUrl: string;
+}
+
+export interface WeatherData {
+  temperature: number;
+  humidity: number;
+  windSpeed: number;
+  heatIndex: number;
+  rainPrediction: number;
+  condition: string;
+  constructionSuitability: string;
+  forecast: { day: string; temp: number; rain: number; suitable: boolean }[];
+  source?: "live" | "mock";
+  city?: string;
+}
+
+export interface DashboardStats {
+  totalWorkers: number;
+  activeWorkers: number;
+  equipmentRunning: number;
+  safetyScore: number;
+  completion: number;
+  budgetUsed: number;
+  daysRemaining: number;
+  alertsActive: number;
+}
+
+export interface AIProgress {
+  yesterday: number;
+  today: number;
+  delta: number;
+  breakdown: Record<string, { yesterday: number; today: number }>;
+}
+
+export interface LiveDataState {
+  timestamp: string;
+  dashboardStats: DashboardStats;
+  workers: Worker[];
+  equipment: Equipment[];
+  materials: Material[];
+  cameras: CameraFeed[];
+  alerts: Alert[];
+  floors: FloorData[];
+  aiProgress: AIProgress;
+  weather: WeatherData;
+  newAlert?: Alert | null;
 }
 
 export interface Worker {

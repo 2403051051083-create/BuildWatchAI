@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Building2, Mail, Lock, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const supabase = createClient();
 
   const validate = () => {
     const newErrors: typeof errors = {};
@@ -34,12 +36,19 @@ export default function LoginPage() {
     }
     setErrors({});
     setLoading(true);
-    // Simulate API call
-    await new Promise((res) => setTimeout(res, 1500));
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setLoading(false);
+      setErrors({
+        password: error.message.toLowerCase().includes("invalid login credentials")
+          ? "Email ya password galat hai. Naya user hai to pehle Register karke account banao."
+          : error.message,
+      });
+      return;
+    }
     setLoading(false);
     setSuccess(true);
-    await new Promise((res) => setTimeout(res, 800));
-    router.push("/verify-otp");
+    router.push("/dashboard");
   };
 
   return (
@@ -142,9 +151,6 @@ export default function LoginPage() {
               <label className="flex items-center gap-2 text-gray-400 cursor-pointer">
                 <input type="checkbox" className="rounded border-white/20" /> Remember me
               </label>
-              <Link href="/forgot-password" className="text-brand-400 hover:text-brand-300 transition-colors">
-                Forgot password?
-              </Link>
             </div>
 
             <button
