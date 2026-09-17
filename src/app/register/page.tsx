@@ -41,19 +41,11 @@ export default function RegisterPage() {
       return;
     }
 
-    if (data.session) {
-      router.replace("/dashboard");
-      return;
-    }
-
-    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-    if (!signInError) {
-      router.replace("/dashboard");
-      return;
-    }
-
     setLoading(false);
-    setError("Account created, but direct login is disabled. In Supabase, open Authentication > Providers > Email and turn off Confirm email.");
+    if (data.session) {
+      await supabase.auth.signOut();
+    }
+    router.replace(`/login?registered=${encodeURIComponent(email)}`);
   };
 
   return (
@@ -71,15 +63,7 @@ export default function RegisterPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="glass-card space-y-4">
-          <div className="grid grid-cols-2 gap-3">
-            <button className="btn-secondary !py-2.5 text-sm">Google</button>
-            <button className="btn-secondary !py-2.5 text-sm">Microsoft</button>
-          </div>
 
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10" /></div>
-            <div className="relative flex justify-center text-xs"><span className="bg-surface-card px-2 text-gray-500">or register with email</span></div>
-          </div>
 
           <div className="space-y-3">
             <div className="relative">

@@ -6,6 +6,7 @@ import {
   Building2, ArrowRight, Play, Video, Box, Brain, Shield,
   Truck, Package, ChevronDown, Star, Check, Mail, Phone, MapPin,
 } from "lucide-react";
+import { formatNumber } from "@/lib/utils";
 import {
   landingFeatures, pricingPlans, testimonials, faqs,
 } from "@/lib/mock-data";
@@ -286,7 +287,7 @@ export default function LandingPage() {
                 )}
                 <h3 className="text-lg font-display font-semibold">{plan.name}</h3>
                 <div className="my-4">
-                  <span className="text-4xl font-display font-bold">${plan.price}</span>
+                  <span className="text-4xl font-display font-bold">₹{formatNumber(plan.price)}</span>
                   <span className="text-gray-500 text-sm">/month</span>
                 </div>
                 <ul className="space-y-3 mb-8">

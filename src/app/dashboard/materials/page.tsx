@@ -20,12 +20,12 @@ const tooltipStyle = {
 };
 
 const costTrendData = [
-  { month: "Feb", steel: 98000, cement: 14200, concrete: 38000, sand: 6800 },
-  { month: "Mar", steel: 110000, cement: 16500, concrete: 42000, sand: 7200 },
-  { month: "Apr", steel: 105000, cement: 15800, concrete: 40000, sand: 7500 },
-  { month: "May", steel: 118000, cement: 17200, concrete: 44000, sand: 7800 },
-  { month: "Jun", steel: 122000, cement: 18000, concrete: 43500, sand: 8100 },
-  { month: "Jul", steel: 125000, cement: 18500, concrete: 45000, sand: 8400 },
+  { month: "Feb", steel: 4900000, cement: 710000, concrete: 1900000, sand: 340000 },
+  { month: "Mar", steel: 5500000, cement: 825000, concrete: 2100000, sand: 360000 },
+  { month: "Apr", steel: 5250000, cement: 790000, concrete: 2000000, sand: 375000 },
+  { month: "May", steel: 6100000, cement: 910000, concrete: 2350000, sand: 410000 },
+  { month: "Jun", steel: 6450000, cement: 950000, concrete: 2450000, sand: 425000 },
+  { month: "Jul", steel: 5900000, cement: 880000, concrete: 2200000, sand: 390000 },
 ];
 
 const upcomingDeliveries = [
@@ -99,7 +99,7 @@ export default function MaterialsPage() {
         className="glass-card"
       >
         <h4 className="text-sm font-medium mb-4 flex items-center gap-2">
-          <DollarSign className="w-4 h-4 text-brand-400" /> Monthly Material Cost Trend ($)
+          <DollarSign className="w-4 h-4 text-brand-400" /> Monthly Material Cost Trend (₹)
         </h4>
         <ResponsiveContainer width="100%" height={220}>
           <AreaChart data={costTrendData}>
@@ -117,8 +117,8 @@ export default function MaterialsPage() {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
             <XAxis dataKey="month" stroke="#475569" fontSize={11} tickLine={false} axisLine={false} />
-            <YAxis stroke="#475569" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
-            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`$${v.toLocaleString()}`]} />
+            <YAxis stroke="#475569" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(v) => `₹${(v / 100000).toFixed(0)}L`} />
+            <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => [`₹${v.toLocaleString('en-IN')}`]} />
             <Legend wrapperStyle={{ fontSize: "11px", color: "#94a3b8" }} iconSize={10} />
             <Area type="monotone" dataKey="steel" name="Steel" stroke="#3b82f6" fill="url(#steelGrad)" strokeWidth={2} />
             <Area type="monotone" dataKey="cement" name="Cement" stroke="#22c55e" fill="url(#cementGrad)" strokeWidth={2} />

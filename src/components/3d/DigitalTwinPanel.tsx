@@ -90,14 +90,16 @@ export default function DigitalTwinPanel({ compact = false, onFloorSelect }: Dig
       {/* 3D Viewport + Side Panel */}
       <div className="flex-1 flex gap-3 min-h-0">
         <div className="flex-1 relative rounded-xl overflow-hidden border border-white/10">
-          <DigitalTwinViewer
-            selectedFloor={selectedFloor}
-            onFloorSelect={handleFloorSelect}
-            timelineProgress={timelineProgress}
-            viewMode={viewMode}
-            isNightMode={isNightMode}
-            visibleFloors={visibleFloors}
-          />
+          <div className="absolute inset-0">
+            <DigitalTwinViewer
+              selectedFloor={selectedFloor}
+              onFloorSelect={handleFloorSelect}
+              timelineProgress={timelineProgress}
+              viewMode={viewMode}
+              isNightMode={isNightMode}
+              visibleFloors={visibleFloors}
+            />
+          </div>
 
           {/* Legend */}
           <div className="absolute bottom-3 left-3 glass-card-sm !p-2 flex gap-3 text-xs">

@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Plane, Upload, Image, Brain, Box, Thermometer,
   AlertTriangle, GitCompare, Play,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 const droneFeatures = [
   { icon: Upload, title: "Upload Drone Video", desc: "Process 4K aerial footage" },
@@ -17,6 +18,52 @@ const droneFeatures = [
   { icon: Plane, title: "Roof Inspection", desc: "Automated roof assessment" },
   { icon: GitCompare, title: "Comparison", desc: "Before/after analysis" },
 ];
+
+function SimulatedDroneView({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  const [time, setTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setTime(new Date());
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className={cn("relative overflow-hidden bg-black", className)}>
+      {/* Drone Video Simulation */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute w-full h-full object-cover opacity-90"
+      >
+        <source src="https://cdn.coverr.co/videos/coverr-construction-site-from-above-4482/1080p.mp4" type="video/mp4" />
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-construction-site-4180-large.mp4" type="video/mp4" />
+      </video>
+      
+      {/* Drone HUD Overlays */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Center reticle */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border-[1px] border-brand-500/40 rounded-full flex items-center justify-center">
+          <div className="w-1.5 h-1.5 bg-brand-400 rounded-full shadow-[0_0_8px_#3b82f6]" />
+        </div>
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-[1px] bg-white/10" />
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-48 w-[1px] bg-white/10" />
+        
+        {/* Scanning effect */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.05]" />
+        
+        {/* Drone telemetry live update */}
+        {time && (
+          <div className="absolute top-4 right-4 text-white/90 font-mono text-xs bg-black/40 px-2 py-1 rounded backdrop-blur-md">
+            {time.toISOString().replace('T', ' ').substring(0, 19)} UTC
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function DronePage() {
   const [activeTab, setActiveTab] = useState<"live" | "analysis" | "upload">("live");
@@ -47,12 +94,12 @@ export default function DronePage() {
         <div className="grid lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 glass-card !p-0 overflow-hidden">
             <div className="relative aspect-video">
-              <img
+              <SimulatedDroneView
                 src="https://images.unsplash.com/photo-1473966968603-fa801b079784?w=1200&h=675&fit=crop"
                 alt="Drone view"
-                className="w-full h-full object-cover"
+                className="w-full h-full"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
               <div className="absolute top-4 left-4 badge-danger flex items-center gap-1">
                 <span className="live-indicator" /> DRONE LIVE
               </div>

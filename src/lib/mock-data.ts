@@ -12,33 +12,33 @@ import type {
 export const projects: Project[] = [
   {
     id: "proj-1",
-    name: "Skyline Tower Phase II",
-    location: "Downtown Metro, NY",
+    name: "Bandra Kurla Complex Hub",
+    location: "Mumbai, MH",
     completion: 67,
     startDate: "2024-03-15",
     endDate: "2026-12-30",
-    budget: 45000000,
-    spent: 30150000,
+    budget: 4500000000,
+    spent: 3015000000,
   },
   {
     id: "proj-2",
-    name: "Harbor Bridge Extension",
-    location: "San Francisco Bay, CA",
+    name: "Navi Mumbai Airport T2",
+    location: "Navi Mumbai, MH",
     completion: 42,
     startDate: "2024-06-01",
     endDate: "2027-06-15",
-    budget: 78000000,
-    spent: 32760000,
+    budget: 7800000000,
+    spent: 3276000000,
   },
   {
     id: "proj-3",
-    name: "Greenfield Residential Complex",
-    location: "Austin, TX",
+    name: "DLF Cyber City Phase III",
+    location: "Gurugram, HR",
     completion: 89,
     startDate: "2023-11-01",
     endDate: "2025-08-20",
-    budget: 22000000,
-    spent: 19580000,
+    budget: 2200000000,
+    spent: 1958000000,
   },
 ];
 
@@ -233,35 +233,35 @@ export const cameras: CameraFeed[] = [
 ];
 
 export const workers: Worker[] = [
-  { id: "w1", name: "James Rodriguez", role: "Foreman", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Floor 3", status: "active" },
-  { id: "w2", name: "Maria Chen", role: "Electrician", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Floor 2", status: "active" },
-  { id: "w3", name: "Ahmed Hassan", role: "Steel Worker", helmet: true, safetyJacket: true, gloves: false, boots: true, zone: "Floor 4", status: "active" },
+  { id: "w1", name: "Rajesh Kumar", role: "Foreman", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Floor 3", status: "active" },
+  { id: "w2", name: "Priya Sharma", role: "Electrician", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Floor 2", status: "active" },
+  { id: "w3", name: "Ahmed Raza", role: "Steel Worker", helmet: true, safetyJacket: true, gloves: false, boots: true, zone: "Floor 4", status: "active" },
   { id: "w4", name: "Unknown Person", role: "Unknown", helmet: false, safetyJacket: false, gloves: false, boots: false, zone: "Restricted", status: "active" },
-  { id: "w5", name: "Sarah Johnson", role: "Engineer", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Ground Floor", status: "active" },
-  { id: "w6", name: "Carlos Mendez", role: "Crane Operator", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Crane Zone", status: "active" },
-  { id: "w7", name: "Priya Sharma", role: "Plumber", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Floor 1", status: "break" },
-  { id: "w8", name: "David Kim", role: "Concrete Worker", helmet: true, safetyJacket: false, gloves: true, boots: true, zone: "Floor 3", status: "active" },
+  { id: "w5", name: "Sneha Desai", role: "Engineer", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Ground Floor", status: "active" },
+  { id: "w6", name: "Vikram Singh", role: "Crane Operator", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Crane Zone", status: "active" },
+  { id: "w7", name: "Arjun Reddy", role: "Plumber", helmet: true, safetyJacket: true, gloves: true, boots: true, zone: "Floor 1", status: "break" },
+  { id: "w8", name: "Suresh Menon", role: "Concrete Worker", helmet: true, safetyJacket: false, gloves: true, boots: true, zone: "Floor 3", status: "active" },
 ];
 
 export const equipment: Equipment[] = [
-  { id: "e1", name: "Tower Crane TC-01", type: "Tower Crane", status: "running", fuelLevel: 72, workingHours: 6.5, location: "North Zone", gps: { lat: 40.7128, lng: -74.006 } },
-  { id: "e2", name: "JCB 3DX Super", type: "JCB", status: "idle", fuelLevel: 45, workingHours: 3.2, location: "Material Yard", gps: { lat: 40.713, lng: -74.0058 } },
-  { id: "e3", name: "CAT 320 Excavator", type: "Excavator", status: "maintenance", fuelLevel: 88, workingHours: 0, location: "Service Bay", gps: { lat: 40.7125, lng: -74.0062 } },
-  { id: "e4", name: "Tata Prima Dumper", type: "Dumper", status: "running", fuelLevel: 60, workingHours: 5.1, location: "East Access", gps: { lat: 40.7132, lng: -74.0055 } },
-  { id: "e5", name: "Schwing S36X", type: "Concrete Pump", status: "running", fuelLevel: 55, workingHours: 4.8, location: "Floor 3", gps: { lat: 40.7129, lng: -74.0059 } },
-  { id: "e6", name: "Ajax Fiori Mixer", type: "Mixer", status: "idle", fuelLevel: 90, workingHours: 2.0, location: "Batch Plant", gps: { lat: 40.7126, lng: -74.0065 } },
-  { id: "e7", name: "CAT D6 Bulldozer", type: "Bulldozer", status: "idle", fuelLevel: 78, workingHours: 1.5, location: "South Perimeter", gps: { lat: 40.7124, lng: -74.0068 } },
+  { id: "e1", name: "Tower Crane TC-01", type: "Tower Crane", status: "running", fuelLevel: 72, workingHours: 6.5, location: "North Zone", gps: { lat: 19.0760, lng: 72.8777 } },
+  { id: "e2", name: "JCB 3DX Super", type: "JCB", status: "idle", fuelLevel: 45, workingHours: 3.2, location: "Material Yard", gps: { lat: 19.0762, lng: 72.8775 } },
+  { id: "e3", name: "Mahindra EarthMaster", type: "Excavator", status: "maintenance", fuelLevel: 88, workingHours: 0, location: "Service Bay", gps: { lat: 19.0758, lng: 72.8779 } },
+  { id: "e4", name: "Tata Prima Dumper", type: "Dumper", status: "running", fuelLevel: 60, workingHours: 5.1, location: "East Access", gps: { lat: 19.0764, lng: 72.8774 } },
+  { id: "e5", name: "Schwing Stetter Pump", type: "Concrete Pump", status: "running", fuelLevel: 55, workingHours: 4.8, location: "Floor 3", gps: { lat: 19.0761, lng: 72.8776 } },
+  { id: "e6", name: "Ajax Fiori Mixer", type: "Mixer", status: "idle", fuelLevel: 90, workingHours: 2.0, location: "Batch Plant", gps: { lat: 19.0759, lng: 72.8780 } },
+  { id: "e7", name: "L&T Komatsu Dozer", type: "Bulldozer", status: "idle", fuelLevel: 78, workingHours: 1.5, location: "South Perimeter", gps: { lat: 19.0757, lng: 72.8773 } },
 ];
 
 export const materials: Material[] = [
-  { id: "m1", name: "Steel", dailyUsage: 12.5, remaining: 245, todayDelivery: 20, cost: 125000, supplier: "ArcelorMittal", unit: "tons" },
-  { id: "m2", name: "Cement", dailyUsage: 45, remaining: 890, todayDelivery: 100, cost: 18500, supplier: "LafargeHolcim", unit: "bags" },
-  { id: "m3", name: "Sand", dailyUsage: 28, remaining: 520, todayDelivery: 50, cost: 8400, supplier: "Local Quarry Co.", unit: "m³" },
-  { id: "m4", name: "Bricks", dailyUsage: 5000, remaining: 85000, todayDelivery: 10000, cost: 4200, supplier: "BrickWorks Inc.", unit: "units" },
-  { id: "m5", name: "Concrete", dailyUsage: 85, remaining: 340, todayDelivery: 120, cost: 45000, supplier: "ReadyMix Pro", unit: "m³" },
-  { id: "m6", name: "Tiles", dailyUsage: 200, remaining: 4500, todayDelivery: 0, cost: 12000, supplier: "TileMaster", unit: "m²" },
-  { id: "m7", name: "Pipes", dailyUsage: 45, remaining: 890, todayDelivery: 200, cost: 6800, supplier: "PipeTech", unit: "m" },
-  { id: "m8", name: "Electrical", dailyUsage: 15, remaining: 320, todayDelivery: 50, cost: 9200, supplier: "ElectroSupply", unit: "units" },
+  { id: "m1", name: "TMT Steel", dailyUsage: 12.5, remaining: 245, todayDelivery: 20, cost: 65000, supplier: "Tata Tiscon", unit: "tons" },
+  { id: "m2", name: "Cement", dailyUsage: 45, remaining: 890, todayDelivery: 100, cost: 380, supplier: "UltraTech", unit: "bags" },
+  { id: "m3", name: "Sand", dailyUsage: 28, remaining: 520, todayDelivery: 50, cost: 1500, supplier: "Local Quarry", unit: "m³" },
+  { id: "m4", name: "Bricks", dailyUsage: 5000, remaining: 85000, todayDelivery: 10000, cost: 8, supplier: "RedBrick India", unit: "units" },
+  { id: "m5", name: "RMC Concrete", dailyUsage: 85, remaining: 340, todayDelivery: 120, cost: 4500, supplier: "ACC ReadyMix", unit: "m³" },
+  { id: "m6", name: "Vitrified Tiles", dailyUsage: 200, remaining: 4500, todayDelivery: 0, cost: 600, supplier: "Kajaria", unit: "m²" },
+  { id: "m7", name: "PVC Pipes", dailyUsage: 45, remaining: 890, todayDelivery: 200, cost: 250, supplier: "Finolex", unit: "m" },
+  { id: "m8", name: "Electrical Wire", dailyUsage: 15, remaining: 320, todayDelivery: 50, cost: 850, supplier: "Havells", unit: "coils" },
 ];
 
 export const alerts: Alert[] = [
@@ -348,15 +348,15 @@ export const landingFeatures = [
 ];
 
 export const pricingPlans = [
-  { name: "Starter", price: 499, features: ["Up to 2 projects", "5 camera feeds", "Basic AI analytics", "Email alerts", "Standard reports"], popular: false },
-  { name: "Professional", price: 1299, features: ["Up to 10 projects", "25 camera feeds", "Advanced AI + Drone", "All alert channels", "Custom reports", "3D Digital Twin"], popular: true },
-  { name: "Enterprise", price: 2999, features: ["Unlimited projects", "Unlimited cameras", "Full AI suite", "Priority support", "API access", "Custom integrations", "Dedicated account manager"], popular: false },
+  { name: "Starter", price: 4999, features: ["Up to 2 projects", "5 camera feeds", "Basic AI analytics", "Email alerts", "Standard reports"], popular: false },
+  { name: "Professional", price: 14999, features: ["Up to 10 projects", "25 camera feeds", "Advanced AI + Drone", "All alert channels", "Custom reports", "3D Digital Twin"], popular: true },
+  { name: "Enterprise", price: 34999, features: ["Unlimited projects", "Unlimited cameras", "Full AI suite", "Priority support", "API access", "Custom integrations", "Dedicated account manager"], popular: false },
 ];
 
 export const testimonials = [
-  { name: "Robert Mitchell", role: "Project Director, Turner Construction", quote: "BuildWatch AI transformed how we monitor our 40-story project. The 3D digital twin alone saved us weeks of coordination meetings.", avatar: "RM" },
-  { name: "Elena Vasquez", role: "Safety Manager, Bechtel", quote: "The AI safety detection caught 3 helmet violations in the first week. Our incident rate dropped 40% since deployment.", avatar: "EV" },
-  { name: "James Park", role: "CEO, Metro Developers", quote: "Investors love the real-time dashboard. We closed funding 2 months early thanks to transparent progress tracking.", avatar: "JP" },
+  { name: "Ravi Shankar", role: "Project Director, L&T Construction", quote: "BuildWatch AI transformed how we monitor our 40-story project in Mumbai. The 3D digital twin alone saved us weeks of coordination meetings.", avatar: "RS" },
+  { name: "Anjali Deshmukh", role: "Safety Manager, Tata Projects", quote: "The AI safety detection caught 3 helmet violations in the first week. Our incident rate dropped 40% since deployment.", avatar: "AD" },
+  { name: "Vikram Oberoi", role: "CEO, DLF Limited", quote: "Investors love the real-time dashboard. We closed funding 2 months early thanks to transparent progress tracking.", avatar: "VO" },
 ];
 
 export const faqs = [

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Video, Maximize2, Minimize2, Camera, Move, ZoomIn, ZoomOut,
   RotateCw, Circle, Grid2X2, Grid3X3, Square, Download,
@@ -10,6 +10,57 @@ import { cameras } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 import StatCard from "@/components/ui/StatCard";
 import { motion, AnimatePresence } from "framer-motion";
+
+function SimulatedCCTV({ src, alt, className }: { src: string; alt: string; className?: string }) {
+  const [time, setTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setTime(new Date());
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className={cn("relative overflow-hidden bg-black", className)}>
+      {/* Panning image to simulate camera movement */}
+      <motion.img
+        src={src}
+        alt={alt}
+        className="absolute w-[120%] h-[120%] max-w-none object-cover opacity-90"
+        initial={{ x: "0%", y: "0%" }}
+        animate={{
+          x: ["0%", "-8%", "0%", "-4%", "0%"],
+          y: ["0%", "-4%", "0%", "-2%", "0%"],
+        }}
+        transition={{
+          duration: 30,
+          ease: "linear",
+          repeat: Infinity,
+        }}
+      />
+      
+      {/* CCTV Overlays */}
+      <div className="absolute inset-0 pointer-events-none">
+        {/* Scanline */}
+        <motion.div 
+          className="w-full h-[2px] bg-white/10 absolute left-0 shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+          animate={{ top: ["-10%", "110%"] }}
+          transition={{ duration: 4, ease: "linear", repeat: Infinity }}
+        />
+        
+        {/* Grain overlay */}
+        <div className="absolute inset-0 opacity-[0.04] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+
+        {/* Timestamp */}
+        {time && (
+          <div className="absolute top-2 right-16 text-white/90 font-mono text-[10px] sm:text-xs bg-black/60 px-2 py-0.5 rounded backdrop-blur-md border border-white/10">
+            {time.toISOString().replace('T', ' ').substring(0, 19)} CAM_REC
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const layoutOptions = [
   { id: 1, label: "1×1", icon: Square, cols: "grid-cols-1" },
@@ -92,11 +143,11 @@ export default function CamerasPage() {
                 fullscreen && "fixed inset-4 z-50 rounded-2xl shadow-2xl"
               )}
             >
-              <div className="relative aspect-video bg-black">
-                <img
+              <div className="relative aspect-video bg-black overflow-hidden rounded-t-2xl lg:rounded-2xl">
+                <SimulatedCCTV
                   src={selectedCam.thumbnail}
                   alt={selectedCam.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20" />
 
@@ -300,11 +351,11 @@ export default function CamerasPage() {
                   onClick={() => { setSelectedCam(cam); setActiveView("main"); }}
                   className="relative group rounded-2xl overflow-hidden border border-white/5 cursor-pointer hover:border-brand-500/30 transition-all"
                 >
-                  <img
+                  <SimulatedCCTV
                     src={cam.thumbnail}
                     alt={cam.name}
                     className={cn(
-                      "w-full object-cover transition-transform group-hover:scale-105",
+                      "w-full transition-transform group-hover:scale-105",
                       layout === 1 ? "aspect-video" : "aspect-video"
                     )}
                   />
