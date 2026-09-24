@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Building2, Mail, Lock, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,7 +16,19 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [notice, setNotice] = useState("");
   const supabase = createClient();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const registeredEmail = params.get("registered");
+    if (registeredEmail) {
+      setEmail(registeredEmail);
+    }
+    if (params.get("confirmation") === "required") {
+      setNotice("Account created. Check your email and confirm it before signing in.");
+    }
+  }, []);
 
   const validate = () => {
     const newErrors: typeof errors = {};
@@ -36,11 +48,22 @@ export default function LoginPage() {
     }
     setErrors({});
     setLoading(true);
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      setErrors({ password: "Supabase is not configured. Check the URL and anon key in .env.local." });
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setLoading(false);
+      const errorMessage = error.message.toLowerCase();
       setErrors({
-        password: error.message.toLowerCase().includes("invalid login credentials")
+        password: errorMessage.includes("invalid path") || errorMessage.includes("failed to fetch")
+          ? "Supabase Auth is unavailable. Verify that your Supabase project URL is active."
+          : errorMessage.includes("email not confirmed")
+          ? "Please confirm your email address before signing in."
+          : errorMessage.includes("invalid login credentials")
           ? "Invalid Id and Password, Please Try Again!"
           : error.message,
       });
@@ -71,6 +94,7 @@ export default function LoginPage() {
         </div>
 
         <div className="glass-card space-y-4">
+          {notice && <p className="text-xs text-status-success">{notice}</p>}
 
 
           <form onSubmit={handleSubmit} className="space-y-3">

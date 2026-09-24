@@ -1,18 +1,49 @@
 "use client";
 
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import {
   Users, HardHat, Truck, Shield, TrendingUp, AlertTriangle,
   Camera, CloudRain,
 } from "lucide-react";
 import StatCard from "@/components/ui/StatCard";
 import ProgressBar from "@/components/ui/ProgressBar";
-import DigitalTwinPanel from "@/components/3d/DigitalTwinPanel";
 import {
   dashboardStats, cameras, aiProgress, alerts, weatherData,
 } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
+const DigitalTwinPanel = dynamic(() => import("@/components/3d/DigitalTwinPanel"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-full min-h-[280px] flex items-center justify-center rounded-xl bg-surface-elevated/40">
+      <div className="text-center">
+        <div className="w-8 h-8 mx-auto mb-2 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+        <p className="text-xs text-gray-400">Preparing digital twin...</p>
+      </div>
+    </div>
+  ),
+});
+
 export default function DashboardPage() {
+  const [showDigitalTwin, setShowDigitalTwin] = useState(false);
+
+  useEffect(() => {
+    const start = () => setShowDigitalTwin(true);
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+
+    if (idleWindow.requestIdleCallback) {
+      const idleId = idleWindow.requestIdleCallback(start, { timeout: 1200 });
+      return () => idleWindow.cancelIdleCallback?.(idleId);
+    }
+
+    const timeoutId = window.setTimeout(start, 300);
+    return () => window.clearTimeout(timeoutId);
+  }, []);
+
   return (
     <div className="space-y-4">
       {/* Top Stats */}
@@ -85,7 +116,13 @@ export default function DashboardPage() {
         <div className="lg:col-span-6">
           <div className="glass-card !p-4 h-full">
             <h3 className="text-sm font-medium mb-3">3D Digital Twin — Skyline Tower Phase II</h3>
-            <DigitalTwinPanel compact />
+            {showDigitalTwin ? (
+              <DigitalTwinPanel compact />
+            ) : (
+              <div className="h-full min-h-[280px] flex items-center justify-center rounded-xl bg-surface-elevated/40">
+                <p className="text-xs text-gray-400">Preparing digital twin...</p>
+              </div>
+            )}
           </div>
         </div>
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Building2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,15 +29,29 @@ export default function RegisterPage() {
 
     setError("");
     setLoading(true);
+    if (!isSupabaseConfigured) {
+      setLoading(false);
+      setError("Supabase is not configured. Check the URL and anon key in .env.local.");
+      return;
+    }
+
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, company, role } },
+      options: {
+        data: { full_name: fullName, company, role },
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/login`,
+      },
     });
 
     if (signUpError) {
       setLoading(false);
-      setError(signUpError.message);
+      const errorMessage = signUpError.message.toLowerCase();
+      setError(errorMessage.includes("email rate limit")
+        ? "Email limit reached. Wait a few minutes or disable Confirm email in Supabase for local testing."
+        : errorMessage.includes("invalid path") || errorMessage.includes("failed to fetch")
+        ? "Supabase Auth is unavailable. Verify that your Supabase project URL is active."
+        : signUpError.message);
       return;
     }
 
@@ -45,7 +59,7 @@ export default function RegisterPage() {
     if (data.session) {
       await supabase.auth.signOut();
     }
-    router.replace(`/login?registered=${encodeURIComponent(email)}`);
+    router.replace(`/login?registered=${encodeURIComponent(email)}${data.session ? "" : "&confirmation=required"}`);
   };
 
   return (

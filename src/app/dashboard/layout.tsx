@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "@/components/dashboard/Sidebar";
 import TopNav from "@/components/dashboard/TopNav";
 import AIChatbot from "@/components/dashboard/AIChatbot";
@@ -14,8 +12,6 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const pathname = usePathname();
-
   return (
     <div className="min-h-screen mesh-gradient">
       <Sidebar
@@ -29,17 +25,7 @@ export default function DashboardLayout({
           sidebarCollapsed ? "ml-[72px]" : "ml-64"
         )}
       >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={pathname}
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.28, ease: "easeOut" }}
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+        <div className="animate-page-in">{children}</div>
       </main>
       <AIChatbot />
     </div>
