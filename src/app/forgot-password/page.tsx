@@ -21,12 +21,6 @@ export default function ForgotPasswordPage() {
     setError("");
     setLoading(true);
 
-    if (!isSupabaseConfigured) {
-      setLoading(false);
-      setError("Supabase is not configured. Add the Supabase URL and anon key first.");
-      return;
-    }
-
     if (method === "email") {
       const { error: resetError } = await supabase.auth.resetPasswordForEmail(identifier, {
         redirectTo: `${window.location.origin}/reset-password`,

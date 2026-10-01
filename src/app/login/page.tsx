@@ -48,11 +48,6 @@ export default function LoginPage() {
     }
     setErrors({});
     setLoading(true);
-    if (!isSupabaseConfigured) {
-      setLoading(false);
-      setErrors({ password: "Supabase is not configured. Check the URL and anon key in .env.local." });
-      return;
-    }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
@@ -63,7 +58,7 @@ export default function LoginPage() {
           ? "Supabase Auth is unavailable. Verify that your Supabase project URL is active."
           : errorMessage.includes("email not confirmed")
           ? "Please confirm your email address before signing in."
-          : errorMessage.includes("invalid login credentials")
+          : errorMessage.includes("invalid login credentials") || errorMessage.includes("invalid id and password")
           ? "Invalid Id and Password, Please Try Again!"
           : error.message,
       });

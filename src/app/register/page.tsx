@@ -29,11 +29,6 @@ export default function RegisterPage() {
 
     setError("");
     setLoading(true);
-    if (!isSupabaseConfigured) {
-      setLoading(false);
-      setError("Supabase is not configured. Check the URL and anon key in .env.local.");
-      return;
-    }
 
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,

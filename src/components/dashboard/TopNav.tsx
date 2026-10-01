@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { projects, alerts } from "@/lib/mock-data";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 
 interface TopNavProps {
   sidebarCollapsed: boolean;
@@ -43,6 +43,12 @@ export default function TopNav({ sidebarCollapsed }: TopNavProps) {
   const unreadAlerts = alerts.filter((a) => !a.read).length;
 
   const handleLogout = async () => {
+    if (!isSupabaseConfigured) {
+      window.localStorage.removeItem("buildwatch-demo-session");
+      window.location.assign("/login");
+      return;
+    }
+
     await supabase.auth.signOut();
     window.location.assign("/login");
   };

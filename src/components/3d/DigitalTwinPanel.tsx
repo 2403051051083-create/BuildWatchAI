@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   Layers,
   Grid3x3,
@@ -28,26 +28,26 @@ export default function DigitalTwinPanel({ compact = false, onFloorSelect }: Dig
   const [isNightMode, setIsNightMode] = useState(false);
   const [visibleFloors, setVisibleFloors] = useState<number[]>(floors.map((f) => f.id));
 
-  const handleFloorSelect = (id: number) => {
+  const handleFloorSelect = useCallback((id: number) => {
     setSelectedFloor(id);
     const floor = floors.find((f) => f.id === id);
     if (floor && onFloorSelect) onFloorSelect(floor);
-  };
+  }, [onFloorSelect]);
 
-  const toggleFloorVisibility = (id: number) => {
+  const toggleFloorVisibility = useCallback((id: number) => {
     setVisibleFloors((prev) =>
       prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
     );
-  };
+  }, []);
 
-  const viewModes = [
+  const viewModes = useMemo(() => [
     { id: "solid" as const, icon: Box, label: "Solid" },
     { id: "wireframe" as const, icon: Grid3x3, label: "Wireframe" },
     { id: "exploded" as const, icon: Layers, label: "Exploded" },
     { id: "transparent" as const, icon: Eye, label: "Transparent" },
-  ];
+  ], []);
 
-  const selectedFloorData = floors.find((f) => f.id === selectedFloor);
+  const selectedFloorData = useMemo(() => floors.find((f) => f.id === selectedFloor), [selectedFloor]);
 
   return (
     <div className={cn("flex flex-col gap-3", compact ? "h-full" : "h-[calc(100vh-12rem)]")}>
@@ -124,32 +124,31 @@ export default function DigitalTwinPanel({ compact = false, onFloorSelect }: Dig
               <h4 className="text-sm font-medium mb-2">Floor Selection</h4>
               <div className="space-y-1 max-h-48 overflow-y-auto">
                 {floors.map((floor) => (
-                  <button
-                    key={floor.id}
-                    onClick={() => handleFloorSelect(floor.id)}
-                    className={cn(
-                      "w-full flex items-center gap-2 px-2 py-1.5 rounded-lg text-xs transition-colors",
-                      selectedFloor === floor.id
-                        ? "bg-brand-600/20 text-brand-400"
-                        : "hover:bg-white/5 text-gray-400"
-                    )}
-                  >
-                    <div
-                      className="w-2 h-2 rounded-full shrink-0"
-                      style={{ backgroundColor: getFloorColor(floor.status) }}
-                    />
-                    <span className="flex-1 text-left">{floor.name}</span>
-                    <span>{floor.completion}%</span>
+                  <div key={floor.id} className="flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs transition-colors hover:bg-white/5">
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFloorVisibility(floor.id);
-                      }}
+                      type="button"
+                      onClick={() => handleFloorSelect(floor.id)}
+                      className={cn(
+                        "flex flex-1 items-center gap-2 text-left",
+                        selectedFloor === floor.id ? "text-brand-400" : "text-gray-400"
+                      )}
+                    >
+                      <div
+                        className="w-2 h-2 rounded-full shrink-0"
+                        style={{ backgroundColor: getFloorColor(floor.status) }}
+                      />
+                      <span className="flex-1 truncate">{floor.name}</span>
+                      <span>{floor.completion}%</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => toggleFloorVisibility(floor.id)}
                       className="opacity-50 hover:opacity-100"
+                      aria-label={visibleFloors.includes(floor.id) ? `Hide ${floor.name}` : `Show ${floor.name}`}
                     >
                       <Eye className={cn("w-3 h-3", !visibleFloors.includes(floor.id) && "opacity-30")} />
                     </button>
-                  </button>
+                  </div>
                 ))}
               </div>
             </div>
