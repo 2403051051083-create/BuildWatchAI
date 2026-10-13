@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { MessageCircle, X, Send, Mic, MicOff } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { MessageCircle, X, Send, Mic, MicOff, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { chatResponses } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -14,35 +13,61 @@ interface Message {
 export default function AIChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hello! I'm BuildWatch AI Assistant. Ask me about project progress, safety, cameras, weather, or reports." },
+    { role: "assistant", content: "Hello! I'm BuildWatch AI Assistant powered by Gemini. Ask me about project progress, safety, cameras, weather, or reports." },
   ]);
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const getResponse = (query: string): string => {
-    const lower = query.toLowerCase();
-    for (const [key, response] of Object.entries(chatResponses)) {
-      if (key !== "default" && lower.includes(key)) return response;
-    }
-    if (lower.includes("camera")) {
-      const match = lower.match(/camera\s*(\d)/);
-      if (match) return `Opening Camera ${match[1]}. Live feed is now displayed.`;
-    }
-    if (lower.includes("floor")) {
-      const match = lower.match(/floor\s*(\d+)/);
-      if (match) return `Showing Floor ${match[1]} details. Completion and safety data loaded.`;
-    }
-    return chatResponses.default;
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const sendMessage = (text: string) => {
-    if (!text.trim()) return;
-    setMessages((prev) => [
-      ...prev,
-      { role: "user", content: text },
-      { role: "assistant", content: getResponse(text) },
-    ]);
+  useEffect(() => {
+    if (isOpen) scrollToBottom();
+  }, [messages, isOpen]);
+
+  const sendMessage = async (text: string) => {
+    if (!text.trim() || isLoading) return;
+
+    const userMessage: Message = { role: "user", content: text };
+    setMessages((prev) => [...prev, userMessage]);
     setInput("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/ai-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: text,
+          history: messages, // Send chat history for context
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to get response");
+      }
+
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: data.response },
+      ]);
+    } catch (error) {
+      console.error("Chat error:", error);
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "Sorry, I'm having trouble connecting to the AI service. Please try again.",
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleVoice = () => {
@@ -84,13 +109,6 @@ export default function AIChatbot() {
     recognition.start();
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      const el = document.getElementById("chat-messages");
-      if (el) el.scrollTop = el.scrollHeight;
-    }
-  }, [messages, isOpen]);
-
   return (
     <>
       <AnimatePresence>
@@ -101,6 +119,7 @@ export default function AIChatbot() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className="fixed bottom-24 right-6 w-96 max-w-[calc(100vw-3rem)] h-[480px] glass-card !p-0 z-50 flex flex-col overflow-hidden shadow-glow-lg"
           >
+            {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-brand-600/10">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
@@ -108,7 +127,7 @@ export default function AIChatbot() {
                 </div>
                 <div>
                   <p className="text-sm font-medium">BuildWatch AI</p>
-                  <p className="text-[10px] text-brand-400">Online · Voice enabled</p>
+                  <p className="text-[10px] text-brand-400">Gemini · Voice enabled</p>
                 </div>
               </div>
               <button onClick={() => setIsOpen(false)} className="btn-ghost !p-1">
@@ -116,6 +135,7 @@ export default function AIChatbot() {
               </button>
             </div>
 
+            {/* Messages */}
             <div id="chat-messages" className="flex-1 overflow-y-auto p-4 space-y-3">
               {messages.map((msg, i) => (
                 <div
@@ -130,8 +150,16 @@ export default function AIChatbot() {
                   {msg.content}
                 </div>
               ))}
+              {isLoading && (
+                <div className="max-w-[85%] px-3 py-2 rounded-xl text-sm bg-white/5 text-gray-400 flex items-center gap-2">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <span>Thinking...</span>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
 
+            {/* Input */}
             <div className="p-3 border-t border-white/10 flex gap-2">
               <button
                 onClick={toggleVoice}
@@ -149,9 +177,14 @@ export default function AIChatbot() {
                 onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
                 placeholder="Ask anything..."
                 className="input-field !py-2 !text-sm flex-1"
+                disabled={isLoading}
               />
-              <button onClick={() => sendMessage(input)} className="btn-primary !px-3 !py-2">
-                <Send className="w-4 h-4" />
+              <button
+                onClick={() => sendMessage(input)}
+                className="btn-primary !px-3 !py-2"
+                disabled={isLoading || !input.trim()}
+              >
+                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               </button>
             </div>
           </motion.div>
